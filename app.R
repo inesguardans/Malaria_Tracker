@@ -51,29 +51,29 @@ countries_df = read.csv("input_data/countries_codes_and_coordinates.csv") %>%
 worldcountry = geojson_read("input_data/50m.geojson", what = "sp")
 country_geoms = read.csv("input_data/country_geoms.csv")
 
-population_data <- read.xlsx("population_data.xlsx")%>%
+population_data <- read.xlsx("input_data/population_data.xlsx")%>%
   gather(year, population, 2:11) %>%
   mutate(year = as.numeric(year))%>%
   arrange(country) 
 
-llin_data <- read.xlsx("LLIN_data.xlsx")%>%
+llin_data <- read.xlsx("input_data/LLIN_data.xlsx")%>%
   gather(year, llin, 2:10) %>%
   mutate(year = as.numeric(year))%>%
   arrange(country) 
 
-budget_data <- read_xlsx("pmi_budgets.xlsx", col_names = TRUE) %>%
+budget_data <- read_xlsx("input_data/pmi_budgets.xlsx", col_names = TRUE) %>%
     mutate(Total_malaria_budget = as.numeric(Total_malaria_budget),
            ITN_budget = as.numeric(ITN_budget),
            Procurement = as.numeric(Procurement)) %>% merge(population_data, by = c("country", "year"))
 
 
-combined_df <- read.xlsx("combined_df.xlsx") %>%
+combined_df <- read.xlsx("input_data/combined_df.xlsx") %>%
   merge(population_data, by = c("country", "year")) %>%
   mutate(ITN_budget_capita = round(as.numeric(ITN_budget/population), 4),
          Total_budget_capita = round(as.numeric(Total_malaria_budget/population), 4),
          year = as.numeric(year))
 
-df_dhs <- read.xlsx("df_dhs.xlsx") %>% mutate(year = as.numeric(year), access_summary = access, hh_use = perc_sleep_itn, hh_ownership = perc_at_least_itn) %>%  
+df_dhs <- read.xlsx("input_data/df_dhs.xlsx") %>% mutate(year = as.numeric(year), access_summary = access, hh_use = perc_sleep_itn, hh_ownership = perc_at_least_itn) %>%  
   group_by(country, year) %>%
   gather(5:22, key = "variable", value = "percentage") %>%
   arrange(country) %>%
@@ -105,7 +105,7 @@ df_dhs <- read.xlsx("df_dhs.xlsx") %>% mutate(year = as.numeric(year), access_su
 )
   )
 
-cases_df <- read.xlsx("cases.xlsx")%>%
+cases_df <- read.xlsx("input_data/cases.xlsx")%>%
   gather(year, cases, 2:10) %>%
   arrange(country) %>% 
   mutate(cases = as.numeric(cases),
