@@ -29,6 +29,8 @@ library(geojsonlint)
 library(purrr)
 library(cowplot)
 library(shinycssloaders)
+library(sp)
+library(spdplyr)
 
 
 
@@ -48,32 +50,32 @@ bignumber <- function(x){
 countries_df = read.csv("input_data/countries_codes_and_coordinates.csv") %>%
   select(-population) %>% mutate(country = as.character(country))
 
-worldcountry = geojson_read("input_data/50m.geojson", what = "sp")
+worldcountry = geojson_read("input_data/50m.geojson", what = "sp") %>% filter(CONTINENT == "Africa") %>% dplyr::arrange(NAME)
 country_geoms = read.csv("input_data/country_geoms.csv")
 
-population_data <- read.xlsx("input_data/population_data.xlsx")%>%
+population_data <- read.xlsx("population_data.xlsx")%>%
   gather(year, population, 2:11) %>%
   mutate(year = as.numeric(year))%>%
   arrange(country) 
 
-llin_data <- read.xlsx("input_data/LLIN_data.xlsx")%>%
+llin_data <- read.xlsx("LLIN_data.xlsx")%>%
   gather(year, llin, 2:10) %>%
   mutate(year = as.numeric(year))%>%
   arrange(country) 
 
-budget_data <- read_xlsx("input_data/pmi_budgets.xlsx", col_names = TRUE) %>%
+budget_data <- read_xlsx("pmi_budgets.xlsx", col_names = TRUE) %>%
     mutate(Total_malaria_budget = as.numeric(Total_malaria_budget),
            ITN_budget = as.numeric(ITN_budget),
            Procurement = as.numeric(Procurement)) %>% merge(population_data, by = c("country", "year"))
 
 
-combined_df <- read.xlsx("input_data/combined_df.xlsx") %>%
+combined_df <- read.xlsx("combined_df.xlsx") %>%
   merge(population_data, by = c("country", "year")) %>%
   mutate(ITN_budget_capita = round(as.numeric(ITN_budget/population), 4),
          Total_budget_capita = round(as.numeric(Total_malaria_budget/population), 4),
          year = as.numeric(year))
 
-df_dhs <- read.xlsx("input_data/df_dhs.xlsx") %>% mutate(year = as.numeric(year), access_summary = access, hh_use = perc_sleep_itn, hh_ownership = perc_at_least_itn) %>%  
+df_dhs <- read.xlsx("df_dhs.xlsx") %>% mutate(year = as.numeric(year), access_summary = access, hh_use = perc_sleep_itn, hh_ownership = perc_at_least_itn) %>%  
   group_by(country, year) %>%
   gather(5:22, key = "variable", value = "percentage") %>%
   arrange(country) %>%
@@ -105,7 +107,7 @@ df_dhs <- read.xlsx("input_data/df_dhs.xlsx") %>% mutate(year = as.numeric(year)
 )
   )
 
-cases_df <- read.xlsx("input_data/cases.xlsx")%>%
+cases_df <- read.xlsx("cases.xlsx")%>%
   gather(year, cases, 2:10) %>%
   arrange(country) %>% 
   mutate(cases = as.numeric(cases),
@@ -116,10 +118,11 @@ cases_df_large <-
   #cases_df %>% inner_join(countries_df, by="country")%>%
   merge(cases_df, countries_df, by= "country") %>%
   mutate(cases1M = round(as.numeric(cases/1000000), 2),
-         cases_percent = round(as.numeric(cases/population), 4)) 
+         cases_percent = round(as.numeric(cases/population), 4)) %>%
+  filter(country != "South Sudan")
 
 llin_df_large <- merge(llin_data, countries_df, by = "country") %>%
-  filter(continent_level == "Africa")
+  filter(continent_level == "Africa", country != "South Sudan")
 
 budget_data_large <- 
   #budget_data %>% full_join(countries_df)%>%
@@ -446,7 +449,7 @@ ui <- bootstrapPage(
                             tags$br(),tags$h4("Background"), 
                             "I am a student in the MsC Economics master at the University of Lausanne." ,tags$br(),tags$br(),
                             
-                            "This thesis has been written in the context of my internship at Vestergaard SÃ rl. Vestergaard is a leading player in the malaria community. 
+                            "This thesis has been written in the context of my internship at Vestergaard Sàrl. Vestergaard is a leading player in the malaria community. 
                             It contributes to the malaria eradication efforts by selling insecticide treated bed nets.
                             In addition, as part of their business development, I have been involved in the ", tags$a(href="https://www.ivizard.org/live-permanet/", "SmartNet Initiative."), 
                             "The project consists in using mobile technology and real-time data to have more accurate information to tackle the disease.",tags$br(),
@@ -454,7 +457,7 @@ ui <- bootstrapPage(
                             access and use, so that we can gain some insights and eventually improve the net distribution efficiency and usage through digital surveys.",tags$br(),
                             
                             tags$br(),tags$br(),tags$h4("Code"),
-                            "Code and input data used to generate this Shiny mapping tool will be available on ",tags$a(href="https://github.com/inesguardans/Thesis", "Github."),tags$br(),
+                            "Code and input data used to generate this Shiny mapping tool will be available on ",tags$a(href="https://github.com/inesguardans/Malaria_Tracker", "Github."),tags$br(),
                             "I have followed the formulas stipulated in the", tags$a(href = "https://dhsprogram.com/data/Guide-to-DHS-Statistics/", "Guide to DHS Statistics."),
                             
                             tags$br(),tags$br(),tags$h4("Sources"),
@@ -465,7 +468,7 @@ ui <- bootstrapPage(
                             
                             
                             tags$br(),tags$br(),tags$h4("Author"),
-                            "InÃ©s Guardans, HEC Lausanne",tags$br(),
+                            "Inés Guardans, HEC Lausanne",tags$br(),
 
                             tags$br(),tags$br(),tags$h4("Contact"),
                             "ines.guardansgonzalez@unil.ch",tags$br(),tags$br(),
@@ -545,7 +548,7 @@ server = function(input, output, session) {
           chosen_country <- input$country}
         
         else {
-          chosen_country <- countries_list
+          chosen_country <- unique(budget_data_large$country)
         }
         
         #Year
@@ -568,7 +571,7 @@ server = function(input, output, session) {
           chosen_country <- input$country}
         
         else {
-          chosen_country <- countries_list
+          chosen_country <- unique(cases_df_large$country)
         }
         
         # Year
@@ -583,7 +586,7 @@ server = function(input, output, session) {
         
         filtered_data <- cases_df_large %>%
           dplyr::filter(country %in% chosen_country,
-                        year == chosen_year)
+                        year == chosen_year)%>% arrange(country)
       }
       
       else if(input$variable_plot ==  "LLINs delivered"){
@@ -592,7 +595,7 @@ server = function(input, output, session) {
           chosen_country <- input$country}
         
         else {
-          chosen_country <- countries_list
+          chosen_country <- unique(llin_df_large$country)
         }
         
         #Year
@@ -623,7 +626,7 @@ server = function(input, output, session) {
     })
 
     reactive_polygons = reactive({
-        worldcountry[worldcountry$ADM0_A3 %in% reactive_data_large()$alpha3, ]
+        worldcountry[worldcountry$ADM0_A3 %in% reactive_data_large()$alpha3, ] %>% arrange(NAME)
     })
 
     # Colors
