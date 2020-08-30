@@ -92,8 +92,8 @@ df_dhs <- read.xlsx("df_dhs.xlsx") %>% mutate(year = as.numeric(year), access_su
                             variable == "hh_use" ~ "HH use of ITNs (%)",
                             variable == "access_summary" ~ "HH access to ITNs (%)",
                             variable == "max_possible_sleep_itn" ~ "Maximum theoretical use (2 people per net)",
-                            variable == "perc_net_2_pers" ~ "HH with at least one net \n for every 2 people (%)",
-                            variable == "perc_itn_2_pers" ~ "HH with at least one ITN \n for every 2 people (%)",
+                            variable == "perc_net_2_pers" ~ "HH with at least one net \n for every 2 people who stayed the night (%)",
+                            variable == "perc_itn_2_pers" ~ "HH with at least one ITN \n for every 2 people who stayed the night (%)",
                             variable == "access" ~ "Percentage of the population with access \n to an ITN within their own household",
                             variable == "perc_sleep_net" ~"Percentage of the HH members who slept \n under an evertreated net the night before the survey",
                             variable == "perc_sleep_itn" ~  "Percentage of the HH members who slept \n under an ITN the night before the survey",
@@ -142,7 +142,7 @@ variable <- c("hh_ownership", "access_summary","hh_use","max_possible_sleep_itn"
               "child_sleep_net", "child_sleep_itn", "child_sleep_own_itn", "pregnant_sleep_net", "pregnant_sleep_itn", "pregnant_sleep_own_itn")
 
 label <- c("HH with at least one ITN (%)", "HH access to ITN's (%)", "HH use of ITNs (%)","Maximum theoretical use (2 people per net)",
-           "HH with at least one mosquito net (%)", "HH with at least one ITN (%)", "HH with at least one net \n for every 2 people (%)", "HH with at least one ITN \n for every 2 people (%)",
+           "HH with at least one mosquito net (%)", "HH with at least one ITN (%)", "HH with at least one net \n for every 2 people (%) who stayed the night", "HH with at least one ITN \n for every 2 people (%) who stayed the night",
            "Percentage of the population with access \n to an ITN within their own household",
            "Percentage of the HH members who slept under \n an evertreated net the night before the survey", "Percentage of the HH members who slept \n under an ITN the night before the survey",
            "Among the household population in households with \n at least one ITN, the percentage who slept \n under an ITN the night before the survey.", 
