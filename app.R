@@ -141,7 +141,7 @@ variable <- c("hh_ownership", "access_summary","hh_use","max_possible_sleep_itn"
               "perc_sleep_net","perc_sleep_itn", "perc_sleep_own_itn",
               "child_sleep_net", "child_sleep_itn", "child_sleep_own_itn", "pregnant_sleep_net", "pregnant_sleep_itn", "pregnant_sleep_own_itn")
 
-label <- c("HH with at least one ITN (%)", "HH access to ITN's (%)", "HH use of ITNs (%)","Maximum theoretical use (2 people per net)",
+label <- c("HH with at least one ITN (%)", "HH population with access to ITNs (%)", "HH population to use ITNs (%)","Maximum theoretical use (2 people per netm %)",
            "HH with at least one mosquito net (%)", "HH with at least one ITN (%)", "HH with at least one net \n for every 2 people (%) who stayed the night", "HH with at least one ITN \n for every 2 people (%) who stayed the night",
            "Percentage of the population with access \n to an ITN within their own household",
            "Percentage of the HH members who slept under \n an evertreated net the night before the survey", "Percentage of the HH members who slept \n under an ITN the night before the survey",
