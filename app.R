@@ -141,7 +141,7 @@ variable <- c("hh_ownership", "access_summary","hh_use","max_possible_sleep_itn"
               "perc_sleep_net","perc_sleep_itn", "perc_sleep_own_itn",
               "child_sleep_net", "child_sleep_itn", "child_sleep_own_itn", "pregnant_sleep_net", "pregnant_sleep_itn", "pregnant_sleep_own_itn")
 
-label <- c("HH with at least one ITN (%)", "HH population with access to ITNs (%)", "HH population to use ITNs (%)","Maximum theoretical use (2 people per netm %)",
+label <- c("HH with at least one ITN (%)", "HH population with access to ITNs (%)", "HH population to use ITNs (%)","Maximum hypothetical use (2 people per net, %)",
            "HH with at least one mosquito net (%)", "HH with at least one ITN (%)", "HH with at least one net \n for every 2 people (%) who stayed the night", "HH with at least one ITN \n for every 2 people (%) who stayed the night",
            "Percentage of the population with access \n to an ITN within their own household",
            "Percentage of the HH members who slept under \n an evertreated net the night before the survey", "Percentage of the HH members who slept \n under an ITN the night before the survey",
@@ -276,7 +276,7 @@ double_plotting <- function(selected_country, selected_group, selected_budget){
       p2 <- ggplot(data = df2, aes(x = year, y = !!rlang::sym(as.name(selected_budget)), 
                                    text = paste(lab_budget[1,1], "(PMI)", !!rlang::sym(as.name(selected_budget))," %","\n","Year: ", 
                                    year), group = 1, color = "Budget")) +
-          geom_line( size = 1)+ geom_point()+ scale_x_continuous(limits = c(2010, 2019), breaks = seq(2010, 2019, 1))+ scale_color_manual(values = "#C2A5CF")+
+          geom_line( size = 1)+ geom_point()+ scale_x_continuous(limits = c(2010, 2019), breaks = seq(2010, 2019, 1), labels = c(10, 11, 12, 13, 14, 15, 16, 17, 18, 19))+ scale_color_manual(values = "#C2A5CF")+
           guides(fill = FALSE)+
           facet_wrap(~lab)+
           scale_y_continuous(limits = c(0, 1.3), breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1, 1.2), labels = mycurrency2(c(0, 0.2, 0.4, 0.6, 0.8, 1, 1.2)))+
@@ -294,7 +294,7 @@ double_plotting <- function(selected_country, selected_group, selected_budget){
       p2 <- ggplot(data = df2, aes(x = year, y = !!rlang::sym(as.name(selected_budget)), 
                                    text = paste(lab_budget[1,1], "(PMI)", mycurrency(!!rlang::sym(as.name(selected_budget))),"\n","Year: ", 
                                                 year), group = 1, color = "Budget")) +
-        geom_line( size = 1)+ geom_point()+ scale_x_continuous(limits = c(2010, 2019), breaks = seq(2010, 2019, 1))+ scale_color_manual(values = "#C2A5CF")+
+        geom_line( size = 1)+ geom_point()+ scale_x_continuous(limits = c(2010, 2019), breaks = seq(2010, 2019, 1), labels = c(10, 11, 12, 13, 14, 15, 16, 17, 18, 19))+ scale_color_manual(values = "#C2A5CF")+
         guides(fill = FALSE)+
         facet_wrap(~lab)+
         scale_y_continuous(limits = c(0, max(df2[,3])+1000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, max(df2[,3])+1000000),
@@ -368,7 +368,7 @@ ui <- bootstrapPage(
                                           top = 150, left = 20, width = 250, fixed=TRUE,
                                           draggable = TRUE, height = "auto",
 
-                                          tags$i(h6("Msc in Economics Master thesis, HEC Lausanne")),
+                                          tags$i(h6("MSc in Economics Master thesis, HEC Lausanne")),
                                           tags$i(h6("Author: Inés Guardans")),
                                          
                                           selectInput(inputId = "variable_plot",
@@ -447,7 +447,7 @@ ui <- bootstrapPage(
                             data from Demographic and Health Surveys for the last ten years and for a wide set of Sub-Saharan African countries. It also includes some contextual variables like malaria funding or malaria incidence.",tags$br(),
                             
                             tags$br(),tags$h4("Background"), 
-                            "I am a student in the MsC Economics master at the University of Lausanne." ,tags$br(),tags$br(),
+                            "I am a student in the MSc Economics master at the HEC Faculty of the University of Lausanne." ,tags$br(),tags$br(),
                             
                             "This thesis has been written in the context of my internship at Vestergaard Sàrl. Vestergaard is a leading player in the malaria community. 
                             It contributes to the malaria eradication efforts by selling insecticide treated bed nets.
@@ -457,7 +457,7 @@ ui <- bootstrapPage(
                             access and use, so that we can gain some insights and eventually improve the net distribution efficiency and usage through digital surveys.",tags$br(),
                             
                             tags$br(),tags$br(),tags$h4("Code"),
-                            "Code and input data used to generate this Shiny mapping tool will be available on ",tags$a(href="https://github.com/inesguardans/Malaria_Tracker", "Github."),tags$br(),
+                            "Code and input data used to generate this Shiny mapping tool is available on ",tags$a(href="https://github.com/inesguardans/Malaria_Tracker", "Github."),tags$br(),
                             "I have followed the formulas stipulated in the", tags$a(href = "https://dhsprogram.com/data/Guide-to-DHS-Statistics/", "Guide to DHS Statistics."),
                             
                             tags$br(),tags$br(),tags$h4("Sources"),
